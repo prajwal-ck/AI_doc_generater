@@ -4,9 +4,11 @@ import time
 import streamlit as st
 from langchain_google_genai import GoogleGenerativeAI
 from fpdf import FPDF
+from dotenv import load_dotenv
 
+load_dotenv()
 # Set up environment variable for Google API key
-os.environ["GOOGLE_API_KEY"] = "AIzaSyBl8ZYSev6LH20GtXRlV3RTwT6zBPEntSE"
+os.getenv('GOOGLE_API_KEY')
 
 # Initialize the LLM model
 model = GoogleGenerativeAI(
