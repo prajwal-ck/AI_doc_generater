@@ -2,9 +2,11 @@ import streamlit as st
 from langchain.schema import HumanMessage, SystemMessage, AIMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 import os
+from dotenv import load_dotenv
 
-# Set up the environment for the Google API
-os.environ["GOOGLE_API_KEY"] ="AIzaSyAVp4msvwc8J5XEJ4S6k3Mchzm86VIZYlg"
+load_dotenv()
+# Set up environment variable for Google API key
+os.getenv('GOOGLE_API_KEY')
 
 # Initialize the chat model
 chat = ChatGoogleGenerativeAI(
@@ -13,7 +15,6 @@ chat = ChatGoogleGenerativeAI(
     max_tokens=None,
     timeout=None,
     max_retries=2
-    # other params...
 )
 
 # Streamlit UI setup
