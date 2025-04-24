@@ -2,6 +2,8 @@ import os
 import fnmatch
 import time
 import streamlit as st
+from pathlib import Path
+import tempfile
 from langchain_google_genai import GoogleGenerativeAI
 from fpdf import FPDF
 from dotenv import load_dotenv
@@ -122,14 +124,30 @@ def process_project(project_path):
             file_name=pdf_file,
             mime="application/pdf"
         )
+def save_uploaded_folder(uploaded_files):
+    """Recreate the uploaded folder structure in a temp directory."""
+    temp_dir = tempfile.mkdtemp()
+    for uploaded_file in uploaded_files:
+        file_path = Path(uploaded_file.name)  # Preserves relative path if uploaded from folder
+        save_path = Path(temp_dir) / file_path
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(save_path, "wb") as f:
+            f.write(uploaded_file.read())
+    return temp_dir
 
 def main():
     st.title("Project Workflow Document Generator")
-
     # Text input for the project path
-    project_path = st.text_input("Enter the project path:")
+    project_path = st.text_input("Enter the project folder path:")
 
     if project_path:
+        process_project(project_path)
+    st.write("<center>(OR)</center>", unsafe_allow_html=True)
+    uploaded_files = st.file_uploader("Upload folder(select all files inside it):", accept_multiple_files=True)
+
+    if uploaded_files:
+        project_path = save_uploaded_folder(uploaded_files)
+        st.info(f"Folder uploaded and saved to temporary path: {project_path}")
         process_project(project_path)
 
 if __name__ == "__main__":
